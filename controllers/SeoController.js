@@ -3,9 +3,9 @@ const catchAsyncErrors = require('../middlewares/CatchAsyncError');
 
 
 exports.createSeo = async (req, res) => {
+    console.log(req.body);
     try {
-        const {select_page, meta_title, meta_description, meta_keyword} = req.body;
-        const newSeo = await Seo.create({select_page, meta_title, meta_description, meta_keyword});
+        const newSeo = await Seo.create(req.body);
         if(!newSeo) {
             return res.status(400).json({
                 success: false,

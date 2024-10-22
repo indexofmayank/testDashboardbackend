@@ -11,7 +11,7 @@ const app = express();
 app.use(cookieParser());
 
 connectToDb();
-
+app.use(cors());
 app.use(express.json({limit: '25mb'}));
 
 app.use('/api/seo', seoRouter);

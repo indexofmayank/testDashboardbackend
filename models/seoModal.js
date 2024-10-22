@@ -17,7 +17,7 @@ const seoSchema = mongoose.Schema({
         require: true
     },
 
-    meta_keyword: {
+    meta_keywords: {
         type: String,
         require: true
     }
