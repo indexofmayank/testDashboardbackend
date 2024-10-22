@@ -1,5 +1,6 @@
 const Seo = require('../models/seoModal');
 const catchAsyncErrors = require('../middlewares/CatchAsyncError');
+const { default: mongoose } = require('mongoose');
 
 
 exports.createSeo = async (req, res) => {
@@ -50,4 +51,36 @@ exports.getAllSeo = catchAsyncErrors(async (req, res, next) => {
             error: error.message
         });
     }
-})
+});
+
+exports.getSeoByPage = async (req, res) => {
+    try {
+       const {page} = req.query;
+       const matchCondition = page ? {"select_page" : {$regex: page, $options: "i"}} : {}
+        const seoData = await Seo.aggregate([
+            {
+                $match: matchCondition
+            },
+            {
+                $project: {
+                    select_page: {$ifNull: ["$select_page", "N/a"]},
+                    meta_title: {$ifNull: ["$meta_title", "N/a"]},
+                    meta_description: {$ifNull: ["$meta_description", "N/a"]},
+                    meta_keywords: {$ifNull: ["$meta_keywords", "N/a"]}
+                }
+            }
+        ]);
+
+        return res.status(200).json({
+            success: true,
+            message: 'it is working bro',
+            data: seoData[0]
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'Server error',
+            error: error.message
+        });
+    }
+}
